@@ -1,0 +1,22 @@
+https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-InstallationandConfiguration
+https://blog.fearcat.in/a?ID=01200-0c10a938-acff-4409-99cb-ab2e79210314
+
+https://dbeaver.io/download/
+
+sudo snap install robo3t-snap 
+
+
+https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-centos-7
+
+https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat-tarball/
+
+https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7
+
+
+https://github.com/marciodelima/case-santander_engdados.git
+
+https://dandelife.com/understanding-the-pros-and-cons-of-access-control-lists/
+
+https://www.hostinger.com/tutorials/how-to-install-postgresql-on-centos-7/#First_Method_-_Install_PostgreSQL_on_CentOS_7_using_the_CentOS_repositories
+

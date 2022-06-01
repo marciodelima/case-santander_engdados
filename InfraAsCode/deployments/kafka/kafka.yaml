@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafkaApp
+  template:
+    metadata:
+      labels:
+        app: kafkaApp
+        id: "0"
+    spec:
+      containers:
+      - name: kafka
+        image: wurstmeister/kafka
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ADVERTISED_PORT
+          value: "30080"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: 34.95.175.183
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zoo1:2181
+        - name: KAFKA_BROKER_ID
+          value: "0"
+        - name: KAFKA_CREATE_TOPICS
+          value: engdados-stream:1:0

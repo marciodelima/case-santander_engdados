@@ -1,0 +1,127 @@
+
+#HADOOP - NAMENODE
+ssh-copy-id -i /home/hadoop/.ssh/id_rsa.pub hadoop@datanode
+
+#CONF
+$HADOOP_PREFIX/bin/hdfs namenode -format
+
+#start serviços
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/start-yarn.sh
+$HADOOP_HOME/bin/mapred --daemon start historyserver
+
+
+#stop servicos
+$HADOOP_HOME/bin/mapred --daemon stop historyserver
+$HADOOP_HOME/sbin/stop-yarn.sh
+$HADOOP_HOME/sbin/stop-dfs.sh
+
+#CONF-HIVE
+$HADOOP_HOME/bin/hadoop fs -mkdir       /tmp
+$HADOOP_HOME/bin/hadoop fs -mkdir       /tmp/hive
+$HADOOP_HOME/bin/hadoop fs -mkdir       /tmp/hadoop
+$HADOOP_HOME/bin/hadoop fs -mkdir       /user/
+$HADOOP_HOME/bin/hadoop fs -mkdir       /user/hive/
+$HADOOP_HOME/bin/hadoop fs -mkdir       /user/hive/warehouse
+$HADOOP_HOME/bin/hadoop fs -mkdir       /user/hadoop
+$HADOOP_HOME/bin/hadoop fs -mkdir       /user/hdfs
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /user/hadoop
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /user/hdfs
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /user/hive
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /tmp
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /tmp/hadoop
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /tmp/hive
+$HADOOP_HOME/bin/hadoop fs -chmod g+w   /user/hive/warehouse
+$HIVE_HOME/bin/schematool -dbType derby -initSchema
+$HIVE_HOME/bin/init-hive-dfs.sh
+
+# hive e hue
+$HIVE_HOME/bin/hive
+$HIVE_HOME/bin/beeline -u jdbc:hive2://namenode:10000 -n hive
+
+#Local
+SET mapreduce.framework.name=local
+
+/opt/hue/build/env/bin/pip install thrift-sasl==0.2.1
+
+nohup /opt/hue/build/env/bin/hue runserver 0.0.0.0:8000 &
+
+nohup $HIVE_HOME/bin/hive --service metastore --hiveconf hive.root.logger=DEBUG,console &
+nohup $HIVE_HOME/bin/hive --service hiveserver2 --hiveconf hive.server2.thrift.port=10000 --hiveconf hive.root.logger=DEBUG,console &
+
+
+#WEBConsoles
+http://35.199.79.152:9870/dfshealth.html#tab-overview
+http://35.199.79.152:8088/cluster
+
+
+http://35.199.79.152:8000/hue
+
+http://35.199.79.152:10002
+
+
+
+GKE
+
+gcloud container clusters get-credentials engdados-santander-gke --zone southamerica-east1-a --project engdados-santander
+
+
+SPARK
+conf/workers
+	Master
+		/opt/spark/sbin/start-master.sh
+	Worker
+		/opt/spark/sbin/start-worker.sh spark://master.southamerica-east1-a.c.engdados-santander.internal:7077
+	Teste => 
+	
+WEB: http://35.247.223.141:8080/
+
+
+
+
+#Mysql
+mysql -u root -p locadora < insert_mysql.sql
+
+#Camadas 
+$HADOOP_HOME/bin/hadoop fs -mkdir       /datalake
+$HADOOP_HOME/bin/hadoop fs -mkdir       /datalake/raw
+$HADOOP_HOME/bin/hadoop fs -mkdir       /datalake/bronze
+$HADOOP_HOME/bin/hadoop fs -mkdir       /datalake/silver
+$HADOOP_HOME/bin/hadoop fs -mkdir       /datalake/gold
+$HADOOP_HOME/bin/hadoop fs -chmod 777   /datalake/raw
+$HADOOP_HOME/bin/hadoop fs -chmod 770   /datalake/bronze
+$HADOOP_HOME/bin/hadoop fs -chmod 774   /datalake/silver
+$HADOOP_HOME/bin/hadoop fs -chmod 774   /datalake/gold
+
+
+groupadd supergroup
+usermod -a -G supergroup nifi
+usermod -a -G supergroup hadoop
+usermod -a -G supergroup marcio
+usermod -a -G supergroup spark
+
+adduser marcio
+usermod -a -G hadoop marcio
+adduser spark
+usermod -a -G hadoop spark
+adduser nifi
+usermod -a -G hadoop nifi
+
+
+#Spark
+
+/opt/spark/bin/spark-submit --deploy-mode client /home/spark/jobs/bronze.py
+
+/opt/spark/bin/spark-submit --deploy-mode client --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 /home/spark/jobs/get_stream.py
+
+
+/opt/spark/bin/spark-submit --deploy-mode client --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 /home/spark/jobs/enviar_contrato.py
+
+
+#Scheduler
+(crontab -l ; echo "0 9 * * * /opt/spark/bin/spark-submit --deploy-mode client /home/spark/jobs/bronze.py") | sort - | uniq - | crontab - 
+
+
+/opt/spark/bin/spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1
+
+

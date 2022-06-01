@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>dfs.name.dir</name>
+    <value>file:///home/hadoop/hdfsdata/namenode</value>
+  </property>
+  <property>
+    <name>dfs.data.dir</name>
+    <value>file:///home/hadoop/hdfsdata/datanode</value>
+  </property>
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property> 
+  <property>
+    <name>dfs.client.block.write.replace-datanode-on-failure.min-replication</name>
+    <value>0</value>
+  </property> 
+  <property>
+    <name>dfs.client.block.write.replace-datanode-on-failure.enable</name>
+    <value>true</value>
+  </property> 
+  <property>
+    <name>dfs.client.block.write.replace-datanode-on-failure.policy</name>
+    <value>DEFAULT</value>
+  </property> 
+  
+  
+   
+</configuration>

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-data-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /var/lib/mongo/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data
+spec:
+  storageClassName: standard
+  volumeName: mongo-data-pv
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: 1Gi
+
